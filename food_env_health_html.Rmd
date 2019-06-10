@@ -1,6 +1,10 @@
 ---
 title: "Food Environment and Health"
-output: html_document
+output: 
+   html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
 ---
 
 ```{r setup, include=FALSE}
@@ -20,6 +24,37 @@ library(plotly)
 library(ggplot2)
 library(knitr)
 ```
+
+
+# Motivation
+
+In 2017, a report from Centers for Disease Control and Prevention revealed that America’s obesity rate has reached a record high. In contrast to the popular belief, New Yorkers are not so safe from the obesity epidemic, as more than half of adult New Yorkers are either overweight or obese. Studies show that the rise in the obesity epidemic is partly due to disparities in food environment; it is harder for some to eat healthier because their options are limited.  
+
+For example, My fellow classamate and me (here is Tim), we often go to McDonald that are near our home for convenience, even though these restaurants are not healthy. Environment can affect our health behaviours imperceptibly.  
+
+This project intends to look deeper into the relationship between food environment in NYC and obesity rate along with diabetes rate and stroke hospitalization rate.
+
+
+
+# Inspiration from other related Work
+
+In 2008, aggregating Google search queries, Google attempted to make accurate predictions about flu activity. Then we are wondering what kind of infomation on the internet we can use to predict the prevelence of chronic disease such as obesity, diabetes or cancer?  
+
+ 
+ 
+# Initial questions
+
+1. Can the percentage of nation-wide chain and fast-food restaurants in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate? 
+
+2. Can the percentage of fast-food restaurant (defined by cuisine description in the restaurant inspection dataset) in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate? 
+
+3. Can the percentage of health inspection grade A restaurant in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?  
+ 
+4. Can the composite restaurant health score of different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?
+
+For the first two questions, we stick to it. For the third one, After looking into the backgroud of the restaurant inspection data, we found out that the percentage of health inspection grade A restaurant is intuitively not related to the three chronic disease health outcomes, so we later consider it as a confounder. We also deleted the fourth problem, since composite restaurant health score is too subjective and difficult to assess. Moreover, we fitted models on the borough level first due to the difficulties we encountered in scaping zipcode-neighborhood data. However, after some struggle, we manage to get the neighborhood information and analyze the data accordingly.
+
+
 
 # Data and Methods
 
