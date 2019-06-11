@@ -1,0 +1,5 @@
+"0","zip_neighbor <- read_csv(""neigh_zipcode.csv"") %>% "
+"0","  mutate(zipcode = as.character(zipcode))"
+"0","##restaurant data with neighbourhood"
+"0","rest_neighborhood = left_join(rest_inspection, zip_neighbor, by = ""zipcode"") %>% "
+"0","  filter(!is.na(neighborhood))"

@@ -1,5 +1,5 @@
 ---
-title: "Food Environment and Health"
+title: "NYC Food Environment and Health"
 output: 
    html_document:
     toc: true
@@ -30,29 +30,22 @@ library(knitr)
 
 In 2017, a report from Centers for Disease Control and Prevention revealed that America’s obesity rate has reached a record high. In contrast to the popular belief, New Yorkers are not so safe from the obesity epidemic, as more than half of adult New Yorkers are either overweight or obese. Studies show that the rise in the obesity epidemic is partly due to disparities in food environment; it is harder for some to eat healthier because their options are limited.  
 
-For example, My fellow classamate and me (here is Tim), we often go to McDonald that are near our home for convenience, even though these restaurants are not healthy. Environment can affect our health behaviours imperceptibly.  
-
 This project intends to look deeper into the relationship between food environment in NYC and obesity rate along with diabetes rate and stroke hospitalization rate.
-
-
-
-# Inspiration from other related Work
-
-In 2008, aggregating Google search queries, Google attempted to make accurate predictions about flu activity. Then we are wondering what kind of infomation on the internet we can use to predict the prevelence of chronic disease such as obesity, diabetes or cancer?  
 
  
  
 # Initial questions
 
-1. Can the percentage of nation-wide chain and fast-food restaurants in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate? 
+**1. Can the percentage of nation-wide chain and fast-food restaurants in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?**
 
-2. Can the percentage of fast-food restaurant (defined by cuisine description in the restaurant inspection dataset) in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate? 
+**2. Can the percentage of fast-food restaurant (defined by cuisine description in the restaurant inspection dataset) in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?**
 
 3. Can the percentage of health inspection grade A restaurant in different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?  
  
 4. Can the composite restaurant health score of different neighborhood of NYC be related to their obesity, diabetes and stroke hospitalization rate?
 
 For the first two questions, we stick to it. For the third one, After looking into the backgroud of the restaurant inspection data, we found out that the percentage of health inspection grade A restaurant is intuitively not related to the three chronic disease health outcomes, so we later consider it as a confounder. We also deleted the fourth problem, since composite restaurant health score is too subjective and difficult to assess. Moreover, we fitted models on the borough level first due to the difficulties we encountered in scaping zipcode-neighborhood data. However, after some struggle, we manage to get the neighborhood information and analyze the data accordingly.
+
 
 
 
@@ -101,7 +94,7 @@ First, we scraped the table data from https://www.health.ny.gov/statistics/cance
 
 ## Data Import and Cleaning
 
-First, we download restaurant inspection data from NYC open data.
+First, we will download restaurant inspection data from NYC open data.
 
 ```{r reading_the_New_York_Inspection_data, message=FALSE, warning=FALSE}
 get_all_inspections = function(url) {
@@ -178,34 +171,34 @@ rest_neighborhood = left_join(rest_inspection, zip_neighbor, by = "zipcode") %>%
 The health data we achieved is very well-structured. We make plots to see the distribution of the three chronic disease outcomes across neighorhoods.
 
 ```{r neighborhood_summary}
+boro = rest_neighborhood %>% select(neighborhood, boro)
+
 health_only_neighborhood <- health[-c(1:6),] %>% 
   rename(neighborhood = name) %>% 
+  left_join(boro) %>%  
   mutate(neighborhood = as.factor(neighborhood))
 
 ##Plotting for outcome in different neighborhood
 bar_obe <- health_only_neighborhood %>%
   mutate(neighborhood = fct_reorder(neighborhood, obesity)) %>% 
   filter(obesity > 25) %>% 
-  ggplot(aes(x = neighborhood,y = obesity, fill = neighborhood)) + geom_col() +  
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "none") +
+  ggplot(aes(x = neighborhood,y = obesity, fill = boro)) + geom_col() +  
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Neighborhood with 25 percent or more obesity rate")
 
 bar_dia <- health_only_neighborhood %>%
   mutate(neighborhood = fct_reorder(neighborhood, diabetes)) %>% 
   filter(diabetes > 10) %>% 
-  ggplot(aes(x = neighborhood,y = diabetes, fill = neighborhood)) + geom_col() +   
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "none") +
+  ggplot(aes(x = neighborhood,y = diabetes, fill = boro)) + geom_col() +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Neighborhood with 10 percent or more diabetes rate")
 
 bar_stro <- health_only_neighborhood %>%
   mutate(neighborhood = fct_reorder(neighborhood, stroke_hosp)) %>% 
   filter(stroke_hosp > 300) %>% 
-  ggplot(aes(x = neighborhood,y = stroke_hosp, fill = neighborhood)) + 
+  ggplot(aes(x = neighborhood,y = stroke_hosp, fill = boro)) + 
   geom_col() +    
-  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
-        legend.position = "none") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   labs(title = "Neighborhood with 300 or more stroke hospitalization in 100,000 adults")
 
 ggplotly(bar_obe)
@@ -567,11 +560,11 @@ Overall, we conclude that there is a significant relationship between chronic di
 
 # Discussion 
 
-Our 2015 Community Health Profiles Open Data has data on obesity, diabetes prevalence rate from 2013 and stroke hospitalization rate from 2012. And the data of geographic distribution of restaurants is from 2014 to 2017. So the health profile data is somewhat earlier than the restaurant geographic distribution. However, as restaurant distribution and chronic disease prevalence rate wouldn’t change much over a few years, the lag between years is not a large concern and theoretically won't affect our results that much. Therefore, our results can still be valid.  
+Our 2015 Community Health Profiles Open Data has data on obesity, diabetes prevalence rate from 2013 and stroke hospitalization rate from 2012. And the data of geographic distribution of restaurants is from 2014 to 2019. So the health profile data is somewhat earlier than the restaurant geographic distribution. However, as restaurant distribution and chronic disease prevalence rate wouldn’t change much over a few years, the lag between years is not a large concern and theoretically won't affect our results that much. Therefore, our results can still be valid.  
 
 Although the cuisine type of a restaurant is typically assumed to directly reflect the health level of the food that restaurant provides, we demonstrate here that even the unhealthiest restaurant can offer one or several healthy foods, which may bring bias to our research. Besides, our study at first treats chain restaurants as a criteria to identify unhealthy restaurants. Obviously this criteria is ambiguous and farfetched. In the end, the study doesn’t include this as the predictor.  
 
-Lastly, although there is an association between fast-food restaurant geographical distribution and chronic disease outcomes, we could not conclude that it is fast-food restaurant causing these health outcomes. Maybe it is because the citizens living in the neighborhood are obese indicating that they like to eat fast food. This will actually result in more fast-food restaurant opening in this neighborhood since the business will be good. Further study need to be conducted before concluding any causation effect.  
+Lastly, although there is an association between fast-food restaurant geographical distribution and chronic disease outcomes, we can not conclude that it is fast-food restaurant causing these health outcomes. Most People do not eat out all the time and we cannot to assume the prevalent restaurant types in a region identifies the residents' diet. Further study need to be conducted before concluding any causation effect.  
 
 
 

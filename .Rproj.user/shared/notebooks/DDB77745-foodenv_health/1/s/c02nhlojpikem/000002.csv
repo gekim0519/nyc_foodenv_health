@@ -1,0 +1,5 @@
+"0","lm_diabetes = "
+"0","  lm(diabetes ~ fastfood_percent + racewhite_rate + poverty + smoking + exercise, combined_model) %>%"
+"0","  broom::tidy() "
+"0","lm_diabetes %>%"
+"0","  kable()"
