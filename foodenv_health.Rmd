@@ -388,9 +388,14 @@ gradea_neighborhood =
 #          xaxis = list(title = 'Neighborhoods in NYC', showticklabels = FALSE),
 #          showlegend = FALSE) 
 
+gradea_rank = gradea_neighborhood %>%
+  mutate(neighborhood = as.factor(neighborhood),
+         neighborhood = fct_reorder(neighborhood,grade_percent)) %>%
+         arrange(desc(grade_percent))
+
 ```
 
-The differences on percentage of "grade-A" restaurants between each neighborhood are observed. "Throgs Neck and Co-op City" has the greatest grade-A restaurant percentage, around `r paste0(format(max(gradea_neighborhood$grade_percent) * 100, digits = 3))`%. "Sunset Park", however, has the least, around `r paste0(format(min(gradea_neighborhood$grade_percent) * 100, digits = 3))`%. "Washington Heights", where we live, takes the fourth counting from the end, around 34%, which is obviously consistent with the feeling we have towards the restaurant condition of "Washington Heights"
+The differences on percentage of "grade-A" restaurants between each neighborhood are observed. "Tottenville and Great Kills" has the greatest grade-A restaurant percentage, around `r paste0(format(max(gradea_neighborhood$grade_percent) * 100, digits = 3))`%. "Sunset Park", however, has the least, around `r paste0(format(min(gradea_neighborhood$grade_percent) * 100, digits = 3))`%. "Washington Heights", where we live, takes the second to last, around 32%, which is obviously consistent with the feeling we have towards the restaurant condition of "Washington Heights"
 
 # Formal Analysis and Findings
 
